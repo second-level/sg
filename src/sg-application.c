@@ -10,6 +10,8 @@ G_DEFINE_TYPE (SgApplication, sg_application, GTK_TYPE_APPLICATION)
 
 static const GOptionEntry entries[] = {
   { "file", 'f', 0, G_OPTION_ARG_FILENAME, NULL, "Save screenshot directly to this file", "filename" },
+  { "include-pointer", 'p', 0, G_OPTION_ARG_NONE, NULL, "Include the pointer with the screenshot", NULL },
+  { "use-flash", 's', 0, G_OPTION_ARG_NONE, NULL, "Take screenshot with a flash", NULL },
   { NULL }
 };
 
@@ -36,12 +38,17 @@ sg_application_command_line (GApplication            *app,
                                      GApplicationCommandLine *command_line)
 {
   gchar *file_arg = NULL;
+  gboolean include_pointer_arg = FALSE;
+  gboolean use_flash_arg = FALSE;
+
   GVariantDict *options;
   gint exit_status = EXIT_SUCCESS;
   
   options = g_application_command_line_get_options_dict (command_line);
 
   g_variant_dict_lookup (options, "file", "^&ay", &file_arg);
+  g_variant_dict_lookup (options, "include-pointer", "b", &include_pointer_arg);
+  g_variant_dict_lookup (options, "use-flash", "b", &use_flash_arg);
 
   if (NULL == file_arg)
   {
@@ -49,9 +56,9 @@ sg_application_command_line (GApplication            *app,
     goto out;
   }
   
-  makeScreenshot(file_arg);
+  makeScreenshot(file_arg, include_pointer_arg, use_flash_arg);
   
- out:
+  out:
   return exit_status;
 }
 

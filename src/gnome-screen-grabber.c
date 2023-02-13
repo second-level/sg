@@ -2,7 +2,7 @@
 
 #include "gnome-screen-grabber.h"
 
-void makeScreenshot(gchar *fileName)
+void makeScreenshot(gchar *fileName, gboolean cursor, gboolean flash)
 {
   g_autoptr(GError) error = NULL;
   GDBusConnection *connection;
@@ -12,8 +12,8 @@ void makeScreenshot(gchar *fileName)
 
   method_name = "Screenshot";
   method_params = g_variant_new("(bbs)",
-                                       TRUE,
-                                       TRUE, /* flash */
+                                       cursor,
+                                       flash, /* flash */
                                        fileName);
 
   connection = g_application_get_dbus_connection (g_application_get_default ());
